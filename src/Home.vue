@@ -96,6 +96,7 @@ import { BN } from "bn.js";
 // Firebase libraries for custom authentication
 import { initializeApp } from "firebase/app";
 import { GoogleAuthProvider, getAuth, signInWithEmailAndPassword, signInWithPopup, UserCredential } from "firebase/auth";
+import axios from 'axios';
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -110,11 +111,11 @@ export default {
 
     // IMP START - SDK Initialization
     // IMP START - Dashboard Registration
-    const web3AuthClientId = "BPi5PB_UiIZ-cPz1GtV5i1I2iOSOHuimiXBI0e-Oe_u6X3oVAbCiAZOTEBtTXw4tsluTITPqA8zMsfxIKMjiqNQ"; // get from https://dashboard.web3auth.io
+    const web3AuthClientId = "BNOTwRHh2XvOLBe8XHTidikoUmwTuF7bGHBBp_YmpCOOGhuEzo1cvQavmtRtVaZU87_Dw_BF7FxcNCF2i9KhslA"; // get from https://dashboard.web3auth.io
     // IMP END - Dashboard Registration
 
     // IMP START - Verifier Creation
-    const verifier = "w3a-firebase-demo";
+    const verifier = "bbbbbb";
     // IMP END - Verifier Creation
 
     const chainConfig = {
@@ -129,7 +130,7 @@ export default {
 
     const coreKitInstance = new Web3AuthMPCCoreKit({
       web3AuthClientId,
-      web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
+      web3AuthNetwork: WEB3AUTH_NETWORK.DEVNET,
       setupProviderOnInit: false, // needed to skip the provider setup
       manualSync: true,
     });
@@ -191,8 +192,9 @@ export default {
           throw new Error("initiated to login");
         }
         // IMP START - Auth Provider Login
-        const loginRes = await signInWithGoogle();
-        const idToken = await loginRes.user.getIdToken(true);
+        // const loginRes = await signInWithGoogle();
+        // const idToken = await loginRes.user.getIdToken(true);
+        const idToken = await getweb3token();
         const parsedToken = parseToken(idToken);
         // IMP END - Auth Provider Login
 
@@ -451,6 +453,19 @@ export default {
         el.innerHTML = JSON.stringify(args || {}, null, 2);
       }
       console.log(...args);
+    }
+
+    async function getweb3token() {
+      const config = {
+        method: 'get',
+        url: '/api/account/v1/users/web3/token',
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjQwMjY1OTA4MzgsImV4cCI6MTcyNDgzMzQxNywiaWF0IjoxNzIyMjQxNDE3LCJpc3MiOiJteS1wcm9qZWN0In0.t0sRSdHos2WX8LCAawJ3rnm7__5ccpbLC_q0KRzxIivPkxBBu1LwvYi5G_ZNtAHFbbUg50F96OjubRjgEMX76w'
+        }
+      };
+
+      const response = await axios(config);
+      return response.data.data.token;
     }
 
     return {
