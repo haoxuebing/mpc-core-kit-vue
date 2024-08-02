@@ -51,6 +51,12 @@
         <div>
           <button class="card" @click="exportMnemonicFactor" style="cursor: pointer">Generate Backup (Mnemonic)</button>
         </div>
+        <div>
+          <button class="card" @click="getDeviceFactor" style="cursor: pointer">Get Device Factor</button>
+        </div>
+        <div>
+          <button class="card" @click="MnemonicToFactorKeyHex" style="cursor: pointer">Get Recovery Factor Key using Mnemonic</button>
+        </div>
       </div>
     </div>
     <div id="console" style="white-space: pre-line">
@@ -253,17 +259,17 @@ export default {
         // You can do this on the constructor as well for faster experience
         const web3authSfa = new Web3AuthSingleFactorAuth({
           clientId: web3AuthClientId, // Get your Client ID from Web3Auth Dashboard
-          web3AuthNetwork: WEB3AUTH_NETWORK.MAINNET,
+          web3AuthNetwork: WEB3AUTH_NETWORK.DEVNET,
           usePnPKey: false, // Setting this to true returns the same key as PnP Web SDK, By default, this SDK returns CoreKitKey.
         });
         const privateKeyProvider = new CommonPrivateKeyProvider({ config: { chainConfig } });
         await web3authSfa.init(privateKeyProvider);
 
         // Login using Firebase Email Password
-        const auth = getAuth(app);
-        const res = await signInWithEmailAndPassword(auth, "custom+jwt@firebase.login", "Testing@123");
-        console.log(res);
-        const idToken = await res.user.getIdToken(true);
+        // const auth = getAuth(app);
+        // const res = await signInWithEmailAndPassword(auth, "custom+jwt@firebase.login", "Testing@123");
+        // console.log(res);
+        const idToken = await getweb3token();
         const userInfo = parseToken(idToken);
 
         // Use the Web3Auth SFA SDK to generate an account using the Social Factor
